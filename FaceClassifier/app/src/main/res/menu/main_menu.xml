@@ -15,7 +15,7 @@
             android:icon = "@drawable/menu_search_icon"/>
 
         <item
-            android:id="@+id/recommendation"
+            android:id="@+id/nav_recommendation"
             android:title="@string/get_recommendation"
             android:icon="@drawable/recommendation_icon"/>
 
@@ -25,7 +25,7 @@
             android:icon = "@drawable/face_info"/>
 
         <item
-            android:id="@+id/face_shape_info"
+            android:id="@+id/nav_face_shape_info"
             android:title="@string/face_shape"
             android:icon = "@drawable/face_shape_info_icon"/>
     </group>

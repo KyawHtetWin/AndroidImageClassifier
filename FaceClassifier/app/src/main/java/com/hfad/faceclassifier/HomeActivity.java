@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -18,7 +19,15 @@ import android.widget.Toast;
 import com.google.android.material.navigation.NavigationView;
 import com.hfad.faceclassifier.LoginSignup.StartUpScreen;
 
-public class HomeActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener{
+import java.util.List;
+
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
+
+public class HomeActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener,
+        EasyPermissions.PermissionCallbacks {
+
+    private static final int MULTIPLE_PERMISSIONS = 7777;
 
     private static final float END_SCALE = 0.7f;
     /************** UI Components **************/
@@ -33,6 +42,19 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
     LinearLayout contentView;
 
     BrowseHairStylesFragment browseHairStylesFragment;
+
+    /*
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    */
+
+    String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.RECORD_AUDIO};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,18 +170,27 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new HomeFragment()).addToBackStack(null).commit();
                 break;
-            case R.id.face_shape_info:
-                Toast.makeText(this, "Implement Face Shape Info Page", Toast.LENGTH_SHORT).show();
-                break;
+
             case R.id.nav_search:
                 browseHairStylesFragment = new BrowseHairStylesFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         browseHairStylesFragment).addToBackStack(null).commit();
                 break;
+
+            case R.id.nav_recommendation:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new RecommendedFragment()).addToBackStack(null).commit();
+                break;
+
             case R.id.nav_ar:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ARFragment()).addToBackStack(null).commit();
                 break;
+
+            case R.id.nav_face_shape_info:
+                Toast.makeText(this, "Implement Face Shape Info Page", Toast.LENGTH_SHORT).show();
+                break;
+
             default:
                 Toast.makeText(this, "NEED IMPLEMENTATION", Toast.LENGTH_SHORT).show();
                 break;
@@ -187,6 +218,47 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
             case 9999:
                 browseHairStylesFragment.onActivityResult(requestCode, resultCode, data);
                 break;
+
+            case AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE:
+
+                if(EasyPermissions.hasPermissions(this, permissions)){
+                    Toast.makeText(this, "All permission granted", Toast.LENGTH_LONG).show();
+                }
+
+                break;
         }
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(!EasyPermissions.hasPermissions(this, permissions)) {
+            EasyPermissions.requestPermissions(this, "Need permissions for app to function",
+                    MULTIPLE_PERMISSIONS, permissions);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+
+        if(EasyPermissions.somePermissionDenied(this, permissions)) {
+            new AppSettingsDialog.Builder(this).build().show();
+        }
+
     }
 }

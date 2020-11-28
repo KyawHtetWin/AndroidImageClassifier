@@ -34,6 +34,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    // implementation 'com.google.firebase:firebase-storage:19.2.0'
+    // implementation 'com.google.firebase:firebase-database:19.5.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -60,10 +62,15 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-database'
 
+    // Declare the dependency for the Cloud Storage library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-storage'
+
+
     // Declare the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-auth'
-    
+
     // Image loading dependency
     implementation 'com.squareup.picasso:picasso:2.71828'
 
@@ -83,5 +90,8 @@ dependencies {
 
     // https://mvnrepository.com/artifact/de.javagl/obj
     implementation group: 'de.javagl', name: 'obj', version: '0.3.0'
+
+    // Easy Permissions: For developers using AndroidX in their applications
+    implementation 'pub.devrel:easypermissions:3.0.0'
 
 }

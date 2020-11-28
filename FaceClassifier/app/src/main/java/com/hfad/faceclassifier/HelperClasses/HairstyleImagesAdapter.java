@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hfad.faceclassifier.Database.Hairstyle;
 import com.hfad.faceclassifier.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -68,11 +69,20 @@ public class HairstyleImagesAdapter extends RecyclerView.Adapter<HairstyleImages
 
         CardView cardView = holder.cardView;
 
+        // Get current hairstyle
         Hairstyle currentHairStyle = hairstyles.get(position);
 
         // Set the image view in Cardview
-        ImageView imageView = cardView.findViewById(R.id.hairstyle_image);
-        imageView.setImageResource(currentHairStyle.getImageResourceId());
+        ImageView hairstyleImg = cardView.findViewById(R.id.hairstyle_image);
+
+        Picasso.get()
+                .load(currentHairStyle.getImageURL())
+                .placeholder(R.mipmap.ic_launcher_round)
+                .fit()
+                .centerInside()
+                .into(hairstyleImg);
+
+        //hairstyleImg.setImageResource(currentHairStyle.getImageResourceId());
         TextView textView = cardView.findViewById(R.id.face_shape_info);
         textView.setText(currentHairStyle.getFaceshape());
 

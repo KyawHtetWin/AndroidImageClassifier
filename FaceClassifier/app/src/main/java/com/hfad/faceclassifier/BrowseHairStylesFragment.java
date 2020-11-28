@@ -1,6 +1,9 @@
 package com.hfad.faceclassifier;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.Editable;
@@ -11,8 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -20,6 +25,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.hfad.faceclassifier.Database.Hairstyle;
 import com.hfad.faceclassifier.HelperClasses.HairstyleImagesAdapter;
 
@@ -39,6 +50,12 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
 
     HairstyleImagesAdapter mAdapter;
 
+    // Firebase Components
+    private FirebaseStorage storage;
+    private DatabaseReference databaseReference;
+    private ValueEventListener dbListener;
+
+    private ProgressBar mProgressCircle;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,10 +66,19 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
         View view = inflater.inflate(
                 R.layout.fragment_browse_hairstyles, container, false);
 
+        mProgressCircle = view.findViewById(R.id.browse_hairstyle_progress_circle);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mProgressCircle.setProgressTintList(ColorStateList.valueOf(Color.CYAN));
+        }
+
+
         browseHairStyle_RV = view.findViewById(R.id.hairstyle_collection_rv);
+        mHairStyles = new ArrayList<>();
 
-        createHairStyleList();
+        //createHairStyleList();
 
+        // Pass the data to adapter
         mAdapter = new HairstyleImagesAdapter(mHairStyles);
 
         // Assign the adapter to the RV
@@ -60,8 +86,46 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
 
         // Layout manager arranges views inside RecyclerView
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
-
         browseHairStyle_RV.setLayoutManager(layoutManager);
+
+
+        // Firebase initialization
+        databaseReference = FirebaseDatabase.getInstance().getReference("HairstyleImages");
+        storage = FirebaseStorage.getInstance();
+
+        // Adds Database Listener
+        dbListener = databaseReference.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                mHairStyles.clear(); // Clear to prevent loading twice
+
+                // Retrieves hairstyles' data from Firebase Storage
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+
+                    Hairstyle hairstyle = new Hairstyle(postSnapshot.child("FaceShape").getValue().
+                            toString(), postSnapshot.child("ImageURL").getValue().toString());
+
+                    hairstyle.setUniqueKey(postSnapshot.getKey());
+
+                    mHairStyles.add(hairstyle);
+                }
+
+                // Notify adapter of changes in data
+                mAdapter.notifyDataSetChanged();
+
+                mProgressCircle.setVisibility(View.INVISIBLE);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                mProgressCircle.setVisibility(View.VISIBLE);
+            }
+        });
+
 
         // Filter
         filterBtn = view.findViewById(R.id.filter_btn);
@@ -104,10 +168,14 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
             }
         });
     
-        
-
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
     }
 
     /****
@@ -152,6 +220,7 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
         }
     }
 
+    /*
     private void createHairStyleList() {
         mHairStyles = new ArrayList<>();
         mHairStyles.add(new Hairstyle("Heart", R.drawable.heart));
@@ -159,6 +228,8 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
         mHairStyles.add(new Hairstyle("Oval", R.drawable.oval));
         mHairStyles.add(new Hairstyle("Round", R.drawable.square));
     }
+
+     */
 
 
     /*****
@@ -199,6 +270,10 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
         //        Toast.LENGTH_LONG).show();
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        databaseReference.removeEventListener(dbListener);
+    }
 }
 
