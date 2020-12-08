@@ -23,13 +23,13 @@ public class SignUp2nd_page extends AppCompatActivity {
 
     // UI elements
     ImageView backBtn;
-    Button next, login;
+    Button next;
     TextView titleText;
     RadioGroup genderRadioGroup;
     RadioButton selectedGender;
     DatePicker datePicker;
 
-    String fullNameStr, usernameStr, emailStr, passwordStr;
+    String fullNameStr, emailStr, passwordStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +38,12 @@ public class SignUp2nd_page extends AppCompatActivity {
 
         backBtn = findViewById(R.id.signup_back_button);
         next = findViewById(R.id.signup_next_button);
-        login = findViewById(R.id.signup_login_button);
+
         titleText = findViewById(R.id.sigup_title_text);
         genderRadioGroup = findViewById(R.id.gender_radio_group);
         datePicker = findViewById(R.id.agePicker);
 
         fullNameStr = getIntent().getExtras().getString("Full Name");
-        usernameStr = getIntent().getExtras().getString("Username");
         emailStr = getIntent().getExtras().getString("Email");
         passwordStr = getIntent().getExtras().getString("Password");
     }
@@ -82,17 +81,15 @@ public class SignUp2nd_page extends AppCompatActivity {
         intent.putExtra("Gender", selectedGenderStr);
         intent.putExtra("Birthday", birthday);
         intent.putExtra("Full Name", fullNameStr);
-        intent.putExtra("Username", usernameStr);
         intent.putExtra("Email", emailStr);
         intent.putExtra("Password", passwordStr);
 
 
         // Add Transition
-        Pair[] pairs = new Pair[4];
+        Pair[] pairs = new Pair[3];
         pairs[0] = new Pair<View, String>(backBtn, "transition_back_arrow_btn");
         pairs[1] = new Pair<View, String>(next, "transition_next_btn");
-        pairs[2] = new Pair<View, String>(login, "transition_login_btn");
-        pairs[3] = new Pair<View, String>(titleText, "transition_title_text");
+        pairs[2] = new Pair<View, String>(titleText, "transition_title_text");
 
         // Animation only words for version greater than lollipop
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {

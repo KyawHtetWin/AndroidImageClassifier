@@ -3,16 +3,14 @@ package com.hfad.faceclassifier.HelperClasses;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hfad.faceclassifier.Database.Hairstyle;
+import com.hfad.faceclassifier.ModelClasses.Hairstyle;
 import com.hfad.faceclassifier.R;
 import com.squareup.picasso.Picasso;
 

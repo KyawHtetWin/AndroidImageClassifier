@@ -1,6 +1,4 @@
-package com.hfad.faceclassifier.Database;
-
-import com.hfad.faceclassifier.R;
+package com.hfad.faceclassifier.ModelClasses;
 
 import java.io.Serializable;
 
@@ -10,10 +8,10 @@ import java.io.Serializable;
 public class Hairstyle implements Serializable {
 
     private String faceshape;
-    //private int imageResourceId;
     private float rating;
     private Boolean isFavorite;
     private int favoriteIconResourceId;
+    private String gender;
 
     // Image URL on Firebase
     private String imageURL;
@@ -36,16 +34,16 @@ public class Hairstyle implements Serializable {
 
     public void setRating(float rating) { this.rating = rating; }
     public void setFavorite(Boolean isFavorite) { this.isFavorite = isFavorite;}
-    //public void setImageResourceId(int imageResourceId) {this.imageResourceId = imageResourceId; }
     public void setFavoriteIconResourceId(int favoriteIconResourceId) {this.favoriteIconResourceId = favoriteIconResourceId; }
     public void setImageURL(String imageURL) { this.imageURL = imageURL; }
     public void setUniqueKey(String uniqueKey) { this.uniqueKey = uniqueKey; }
     public String getFaceshape() { return faceshape; }
-    //public int getImageResourceId() { return imageResourceId; }
     public Boolean getIsFavorite() {return isFavorite; }
     public int getFavoriteIconResourceId() {return favoriteIconResourceId; }
     public String getImageURL() { return imageURL; }
     public String getUniqueKey() { return uniqueKey; }
+    public void setGender(String gender) {this.gender = gender; }
+    public String getGender() {return gender; }
 
 
 }

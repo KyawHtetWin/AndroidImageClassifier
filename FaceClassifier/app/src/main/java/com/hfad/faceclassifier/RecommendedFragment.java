@@ -21,8 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.hfad.faceclassifier.Database.Hairstyle;
+import com.hfad.faceclassifier.ModelClasses.Hairstyle;
 import com.hfad.faceclassifier.HelperClasses.RecommendedHairStyleAdapter;
+import com.hfad.faceclassifier.ModelClasses.UserHelper;
 
 import java.util.ArrayList;
 
@@ -40,6 +41,11 @@ public class RecommendedFragment extends Fragment {
     private ValueEventListener dbListener;
 
     private ProgressBar mProgressCircle;
+
+    // Current User to provides recommendation
+    private UserHelper currentUser;
+
+    public void setCurrentUser(UserHelper currentUser) {this.currentUser = currentUser; }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,12 +79,23 @@ public class RecommendedFragment extends Fragment {
                 // Retrieves hairstyles' data from Firebase Storage
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
 
-                    Hairstyle hairstyle = new Hairstyle(postSnapshot.child("FaceShape").getValue().
-                            toString(), postSnapshot.child("ImageURL").getValue().toString());
+                    // Face Shape in database image
+                    String faceShape = postSnapshot.child("FaceShape").getValue().toString();
+                    // Gender in database image
+                    String gender = postSnapshot.child("Gender").getValue().toString();
 
+                    Hairstyle hairstyle = new Hairstyle(faceShape, postSnapshot.child("ImageURL").getValue().toString());
+                    hairstyle.setGender(gender);
                     hairstyle.setUniqueKey(postSnapshot.getKey());
 
-                    mHairStyles.add(hairstyle);
+                    // Provides recommendation based on face shape and gender
+                    if(currentUser != null) {
+                        if(currentUser.getFaceShape().equals(hairstyle.getFaceshape()) &&
+                                currentUser.getGender().equals(hairstyle.getGender())){
+                            mHairStyles.add(hairstyle);
+                        }
+
+                    }
                 }
 
                 for (int i=0; i < mHairStyles.size(); i++){
@@ -133,20 +150,6 @@ public class RecommendedFragment extends Fragment {
         return view;
     }
 
-    /*
-    private void createHairStyleList() {
-        mHairStyles = new ArrayList<>();
-        mHairStyles.add(new Hairstyle("Heart", R.drawable.heart));
-        mHairStyles.add(new Hairstyle("Oblong", R.drawable.oblong));
-        mHairStyles.add(new Hairstyle("Oval", R.drawable.oval));
-        mHairStyles.add(new Hairstyle("Round", R.drawable.square));
-
-        for (int i=0; i < mHairStyles.size(); i++){
-            mHairStyles.get(i).setFavoriteIconResourceId(R.drawable.favorite_icon);
-        }
-    }
-
-     */
 
     /*****
      * Allows user to swipe left or right to remove a hairstyle if they don't like it

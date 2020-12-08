@@ -1,9 +1,9 @@
-package com.hfad.faceclassifier.Database;
+package com.hfad.faceclassifier.ModelClasses;
 
 public class UserHelper {
 
 
-    String fullName, username, email, phoneNo, password, birthday, gender;
+    String fullName, username, email, phoneNo, password, birthday, gender, faceShape;
 
     public UserHelper() { }
 
@@ -72,4 +72,8 @@ public class UserHelper {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
+    public void setFaceShape(String faceShape) {this.faceShape = faceShape; }
+
+    public String getFaceShape() {return faceShape; }
 }

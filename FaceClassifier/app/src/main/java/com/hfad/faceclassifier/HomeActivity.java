@@ -2,22 +2,36 @@ package com.hfad.faceclassifier;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.hfad.faceclassifier.LoginSignup.Login;
 import com.hfad.faceclassifier.LoginSignup.StartUpScreen;
+import com.hfad.faceclassifier.ModelClasses.UserHelper;
 
 import java.util.List;
 
@@ -25,7 +39,7 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class HomeActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener,
-        EasyPermissions.PermissionCallbacks {
+        EasyPermissions.PermissionCallbacks, HomeFragment.HomeFragmentListener {
 
     private static final int MULTIPLE_PERMISSIONS = 7777;
 
@@ -38,35 +52,64 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
     // Menu Icon
     ImageView menuIcon;
 
+    // Views in Navigation menu header
+    View navMenuHeader;
+
+    // Navigation Drawer Items
+    TextView navUserName, navEmail;
+
     // Main Layout
     LinearLayout contentView;
 
+    // Browse HairStyle page
     BrowseHairStylesFragment browseHairStylesFragment;
 
-    /*
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    */
+    // Recommendation page
+    RecommendedFragment recommendedFragment;
 
+    // Firebase
+    FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
+    StorageReference storageReference;
+
+    // Required Permissions to ask users
     String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             Manifest.permission.CAMERA,
                             Manifest.permission.RECORD_AUDIO};
+
+    // Represents the current User
+    UserHelper currentUser;
+
+    // User id of the current user
+    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         // Initialize UI Components
         drawerLayout   = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
         menuIcon = findViewById(R.id.menu_icon);
         contentView = findViewById(R.id.content);
 
+        navMenuHeader = navigationView.getHeaderView(0);
+        navUserName = navMenuHeader.findViewById(R.id.nav_user_name);
+        navEmail = navMenuHeader.findViewById(R.id.nav_drawer_email);
+
+        // Initializes Firebase objects
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
+
+        currentUser = new UserHelper();
+
+        // Retrieves the user id of the current user
+        userId = fAuth.getCurrentUser().getUid();
+
+        // Add navigation drawer
         navigationDrawer();
 
         if (savedInstanceState == null) {
@@ -75,6 +118,38 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
 
         }
 
+        Log.i("User ID ", userId);
+        // Gets user information from Cloud Firestore
+        getUserInfo();
+    }
+
+
+    /**************
+     This function retrieves the user information from Cloud Firestore
+     **************/
+    private void getUserInfo() {
+
+        DocumentReference documentReference = fStore.collection("users").document(userId);
+        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot,
+                                @javax.annotation.Nullable FirebaseFirestoreException e) {
+                Log.e("MyTag", "Firebase exception", e);
+                if(documentSnapshot.exists()){
+                    navUserName.setText(documentSnapshot.getString("fullname"));
+                    navEmail.setText(documentSnapshot.getString("email"));
+                    // Retrieves gender information
+                    currentUser.setGender(documentSnapshot.getString("gender"));
+                    // Means user have his face shape detected before
+                    if(!documentSnapshot.getString("faceshape").equals("none"))
+                        currentUser.setGender(documentSnapshot.getString("faceshape"));
+                }
+
+                else {
+                    Log.d("tag", "onEvent: Document do not exists");
+                }
+            }
+        });
     }
 
     /**************
@@ -178,8 +253,17 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                 break;
 
             case R.id.nav_recommendation:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new RecommendedFragment()).addToBackStack(null).commit();
+
+                if(currentUser.getFaceShape() == null) {
+                    Toast.makeText(this, "Detect your face shape before getting recommendation", Toast.LENGTH_SHORT).show();
+                }
+
+                else {
+                    recommendedFragment = new RecommendedFragment();
+                    recommendedFragment.setCurrentUser(currentUser);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                           recommendedFragment).addToBackStack(null).commit();
+                }
                 break;
 
             case R.id.nav_ar:
@@ -191,22 +275,57 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                 Toast.makeText(this, "Implement Face Shape Info Page", Toast.LENGTH_SHORT).show();
                 break;
 
-            default:
+            case R.id.nav_logout:
                 Toast.makeText(this, "NEED IMPLEMENTATION", Toast.LENGTH_SHORT).show();
+                // logOutPressed();
+                //fAuth.signOut(); // Logout the user
+                // Takes user back to start up screen
+                //startActivity(new Intent(getApplicationContext(), StartUpScreen.class));
+                //finish();
                 break;
 
+            case R.id.nav_about_us:
+                aboutPressed();
+                break;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    /**************
-     This function is triggered whenever a user clicks on the button to login or signup
-     **************/
+    // Allows the user to log out of the app
+    public void logOutPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this,
+                android.R.style.Theme_Material_Light_Dialog_NoActionBar_MinWidth);
+        builder.setMessage("Are you sure you want to log out?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        fAuth.signOut();
+                        Toast.makeText(getApplicationContext(), "Signed Out", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(HomeActivity.this, Login.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
 
-    public void startUpScreenClicked(View view) {
-        startActivity(new Intent(HomeActivity.this, StartUpScreen.class));
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    // Show the information on the version of our application
+    public void aboutPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this,
+                android.R.style.Theme_Material_Light_Dialog_NoActionBar_MinWidth);
+        builder.setTitle("About");
+        builder.setMessage("Hair For Your Face\nVersion 1.0\nDate: Dec 12th, 2020");
+        AlertDialog alert = builder.create();
+        alert.setCanceledOnTouchOutside(true);
+        alert.show();
     }
 
 
@@ -228,7 +347,6 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                 break;
         }
     }
-
 
     @Override
     protected void onStart() {
@@ -260,5 +378,16 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
             new AppSettingsDialog.Builder(this).build().show();
         }
 
+    }
+
+    // The argument of the this method, faceShape, represents the face shape of user
+    // that has been detected by machine learning model. Update the face shape in user
+    // profile on Cloud Firestore
+    @Override
+    public void userFaceShape(String faceShape) {
+        // Update the user face shape on Cloud Firestore
+        fStore.collection("users").document(userId).update("faceshape", faceShape);
+        // Update the current user information with the detected faceShape
+        currentUser.setFaceShape(faceShape);
     }
 }

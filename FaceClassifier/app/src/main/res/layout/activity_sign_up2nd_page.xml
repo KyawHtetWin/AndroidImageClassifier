@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,7 +18,7 @@
             android:id="@+id/signup_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/general_back_icon"
+            app:srcCompat="@drawable/general_back_icon"
             android:padding="5dp"
             android:transitionName="transition_back_arrow_btn"/>
 
@@ -110,17 +111,6 @@
             android:layout_marginTop="20dp"
             android:transitionName="transition_next_btn"/>
 
-        <Button
-            android:id="@+id/signup_login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/login"
-            android:background="#00000000"
-            android:textColor="@color/smokyBlack"
-            android:fontFamily="@font/muli"
-            android:elevation="5dp"
-            android:layout_marginTop="20dp"
-            android:transitionName="transition_login_btn"/>
 
     </LinearLayout>
 

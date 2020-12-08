@@ -18,11 +18,11 @@ public class SignUp extends AppCompatActivity {
 
     // UI elements
     ImageView backBtn;
-    Button next, login;
+    Button next;
     TextView titleText;
-    TextInputLayout fullName, username, email, password;
+    TextInputLayout fullName, email, password;
 
-    String fullNameStr, usernameStr, emailStr, passwordStr;
+    String fullNameStr, emailStr, passwordStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +31,9 @@ public class SignUp extends AppCompatActivity {
 
         backBtn = findViewById(R.id.signup_back_button);
         next = findViewById(R.id.signup_next_button);
-        login = findViewById(R.id.signup_login_button);
+
         titleText = findViewById(R.id.sigup_title_text);
         fullName = findViewById(R.id.signup_fullname);
-        username = findViewById(R.id.signup_username);
         email = findViewById(R.id.signup_email);
         password = findViewById(R.id.signup_password);
     }
@@ -58,31 +57,9 @@ public class SignUp extends AppCompatActivity {
         }
     }
 
-    private boolean validateUserName(){
-        usernameStr = username.getEditText().getText().toString().trim();
-
-        // To check that the username has no whitespaces (20 character limit to username)
-        String checkspaces = "\\A\\w{1,20}\\z";
-
-        if(usernameStr.isEmpty()) {
-            username.setError("Field can not be empty");
-            return false;
-        } else if(usernameStr.length()>20){
-            username.setError("Username must be less than 20 characters");
-            return false;
-        } else if(!usernameStr.matches(checkspaces)){
-            username.setError("No white space allowed");
-            return false;
-        } else {
-            username.setError(null);
-            // Removes space of error message
-            username.setErrorEnabled(false);
-            return true;
-        }
-    }
 
     private boolean validateEmail(){
-        emailStr = username.getEditText().getText().toString().trim();
+        emailStr = email.getEditText().getText().toString().trim();
 
         // To check that correct email pattern matches
         String checkEmail = "[a-zA-Z0-9._-]+@[a-z]+.+[a-z]+";
@@ -91,12 +68,12 @@ public class SignUp extends AppCompatActivity {
             email.setError("Field can not be empty");
             return false;
         }
-        /*
+
         if(!emailStr.matches(checkEmail)){
             email.setError("Invalid Email");
             return false;
         }
-        */
+
         else {
             email.setError(null);
             // Removes space of error message
@@ -122,14 +99,12 @@ public class SignUp extends AppCompatActivity {
             password.setError("Field can not be empty");
             return false;
         }
-        /*
-        else if (!passwordStr.matches(checkPassword)) {
-            password.setError("Password should contain 4 characters!");
+
+        else if (passwordStr.length() < 6 ) {
+            password.setError("Password should contain at least 6 characters!");
             return false;
-
-
         }
-        */
+
         else {
             password.setError(null);
             password.setErrorEnabled(false);
@@ -142,23 +117,21 @@ public class SignUp extends AppCompatActivity {
      ***/
     public void callNextSignupScreen(View view) {
 
-        if(!validateFullName() | !validateUserName() | !validateEmail() |!validatePassword())
+        if(!validateFullName() | !validateEmail() |!validatePassword())
             return;
 
         Intent intent = new Intent(SignUp.this, SignUp2nd_page.class);
 
         // Pass on user information
         intent.putExtra("Full Name", fullNameStr);
-        intent.putExtra("Username", usernameStr);
         intent.putExtra("Email", emailStr);
         intent.putExtra("Password", passwordStr);
 
         // Add Transition
-        Pair[] pairs = new Pair[4];
+        Pair[] pairs = new Pair[3];
         pairs[0] = new Pair<View, String>(backBtn, "transition_back_arrow_btn");
         pairs[1] = new Pair<View, String>(next, "transition_next_btn");
-        pairs[2] = new Pair<View, String>(login, "transition_login_btn");
-        pairs[3] = new Pair<View, String>(titleText, "transition_title_text");
+        pairs[2] = new Pair<View, String>(titleText, "transition_title_text");
 
         // Animation only words for version greater than lollipop
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {

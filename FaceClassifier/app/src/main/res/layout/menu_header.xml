@@ -6,7 +6,7 @@
     android:paddingLeft="15dp">
 
     <TextView
-        android:id="@+id/user_username"
+        android:id="@+id/nav_drawer_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/username"
@@ -15,12 +15,12 @@
         />
 
     <TextView
-        android:id="@+id/user_name"
+        android:id="@+id/nav_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/user_name"
         android:textSize="24sp"
-        android:layout_above="@id/user_username"
+        android:layout_above="@id/nav_drawer_email"
         android:textColor="@color/smokyBlack"
         android:fontFamily="@font/brandon_grotesque_black"/>
 
@@ -28,7 +28,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/hair_salon"
-        android:layout_above="@id/user_name"/>
+        android:layout_above="@id/nav_user_name"/>
 
     <ImageView
         android:layout_width="103dp"

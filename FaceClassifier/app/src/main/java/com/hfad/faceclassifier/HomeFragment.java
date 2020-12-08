@@ -38,6 +38,8 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,7 +52,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-// android:adjustViewBounds="true"
 public class HomeFragment extends Fragment implements View.OnClickListener {
     private static final Pattern IP_ADDRESS
             = Pattern.compile(
@@ -65,6 +66,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private static final String ipv4Address = "192.168.0.105";
     private static final String portNumber  = "5000";
 
+    // Stores the server response in order of face shape, gender, age range
+    List<String> serverResponse = null;
+
+    public interface HomeFragmentListener {
+        public void userFaceShape(String faceShape);
+    }
+
+    HomeFragmentListener homeFragmentListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,8 +81,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.INTERNET}, 2);
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+    }
 
-        //setContentView(R.layout.activity_main);
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try{
+            homeFragmentListener = (HomeFragmentListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement HomeFragmentListener");
+        }
+
     }
 
     @Nullable
@@ -215,7 +233,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     public void run() {
                         TextView responseText = getView().findViewById(R.id.responseText);
                         try {
-                            responseText.setText("Detected Face Shape: " + response.body().string());
+                            serverResponse = Arrays.asList(response.body().string().split(","));
+                            String message = "";
+
+                            if(serverResponse.get(0).equals("NO FACE"))
+                                message += "No Face Detected";
+
+                            else {
+                               homeFragmentListener.userFaceShape(serverResponse.get(0));
+                               message += "Detected Face Shape: " + serverResponse.get(0);
+                               message += "\nGender: " + serverResponse.get(1);
+                               message += "\nEstimated Age Range: " + serverResponse.get(2);
+
+                            }
+
+                            responseText.setText(message);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

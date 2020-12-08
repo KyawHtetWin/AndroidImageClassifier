@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,10 +28,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.hfad.faceclassifier.Database.Hairstyle;
+import com.hfad.faceclassifier.ModelClasses.Hairstyle;
 import com.hfad.faceclassifier.HelperClasses.HairstyleImagesAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class BrowseHairStylesFragment extends Fragment implements FilterDialog.FilterDialogListener {
@@ -76,8 +75,6 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
         browseHairStyle_RV = view.findViewById(R.id.hairstyle_collection_rv);
         mHairStyles = new ArrayList<>();
 
-        //createHairStyleList();
-
         // Pass the data to adapter
         mAdapter = new HairstyleImagesAdapter(mHairStyles);
 
@@ -104,9 +101,12 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
                 // Retrieves hairstyles' data from Firebase Storage
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
 
-                    Hairstyle hairstyle = new Hairstyle(postSnapshot.child("FaceShape").getValue().
-                            toString(), postSnapshot.child("ImageURL").getValue().toString());
+                    String faceShape = postSnapshot.child("FaceShape").getValue().toString();
+                    String imgURL = postSnapshot.child("ImageURL").getValue().toString();
+                    String gender = postSnapshot.child("Gender").getValue().toString();
 
+                    Hairstyle hairstyle = new Hairstyle(faceShape,imgURL);
+                    hairstyle.setGender(gender);
                     hairstyle.setUniqueKey(postSnapshot.getKey());
 
                     mHairStyles.add(hairstyle);
@@ -211,42 +211,38 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
                     // Get text array from voice intent
                     ArrayList<String> result = data.getStringArrayListExtra
                             (RecognizerIntent.EXTRA_RESULTS);
-                    // Set to text view
-                    // Toast.makeText(getContext(), "" + result.get(0), Toast.LENGTH_SHORT).show();
-                    //filter(result.get(0));
                     searchBar.setText(result.get(0));
                 }
+
                 break;
         }
     }
 
-    /*
-    private void createHairStyleList() {
-        mHairStyles = new ArrayList<>();
-        mHairStyles.add(new Hairstyle("Heart", R.drawable.heart));
-        mHairStyles.add(new Hairstyle("Oblong", R.drawable.oblong));
-        mHairStyles.add(new Hairstyle("Oval", R.drawable.oval));
-        mHairStyles.add(new Hairstyle("Round", R.drawable.square));
-    }
-
-     */
 
 
     /*****
-     *
      * Filter the RecyclerView based on the search term (Search Logic)
-     *
      * @param searchTerm
      */
-    private void filter(String searchTerm){
+    private void filter(String searchTerm) {
+        searchTerm = searchTerm.toLowerCase();
+
+        List<String> searchTerms = Arrays.asList(searchTerm.split(" "));
 
         ArrayList<Hairstyle> filteredList = new ArrayList<>();
 
         for(Hairstyle hairstyle: mHairStyles){
             String face_shape = hairstyle.getFaceshape().toLowerCase();
-            if(face_shape.contains(searchTerm.toLowerCase())){
+            String gender = hairstyle.getGender().toLowerCase();
+
+            if(searchTerms.contains(face_shape) && searchTerms.contains(gender))
                 filteredList.add(hairstyle);
-            }
+
+            else if(searchTerm.equals(face_shape))
+                filteredList.add(hairstyle);
+
+            else if(searchTerm.equals(gender))
+                filteredList.add(hairstyle);
         }
 
         mAdapter.filtered(filteredList);
@@ -262,12 +258,25 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
     @Override
     public void applyFilter(String selectedFaceShape, String selectedGender) {
 
-        if (!selectedFaceShape.equals("NONE")){
-            searchBar.setText(selectedFaceShape);
+        String searchTerm = "";
+
+        if (selectedFaceShape != null && !selectedFaceShape.equals("NONE")) {
+            searchTerm += selectedFaceShape;
         }
 
-        // Toast.makeText(getContext(), selectedFaceShape + "\n" + selectedGender,
-        //        Toast.LENGTH_LONG).show();
+        if (selectedGender != null && !selectedGender.equals("NONE")) {
+            if(searchTerm.isEmpty()) {
+                searchTerm += selectedGender;
+            }
+
+            else {
+                searchTerm += " " + selectedGender;
+            }
+        }
+
+        searchBar.setText(searchTerm);
+
+
     }
 
     @Override

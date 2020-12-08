@@ -40,15 +40,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/menu_icon" />
-        
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:onClick="startUpScreenClicked"
-            android:src="@drawable/profile"/>
-
+            app:srcCompat="@drawable/menu_icon" />
     </RelativeLayout>
 
     <FrameLayout

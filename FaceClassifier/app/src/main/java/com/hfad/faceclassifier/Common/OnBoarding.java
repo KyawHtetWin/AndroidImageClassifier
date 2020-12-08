@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.hfad.faceclassifier.HelperClasses.SliderAdapter;
 import com.hfad.faceclassifier.HomeActivity;
+import com.hfad.faceclassifier.LoginSignup.StartUpScreen;
 import com.hfad.faceclassifier.R;
 
 public class OnBoarding extends AppCompatActivity {
@@ -66,8 +67,9 @@ public class OnBoarding extends AppCompatActivity {
         viewPager.setCurrentItem(currentPosition+1);
     }
 
+
     public void get_started(View view) {
-        startActivity(new Intent(OnBoarding.this, HomeActivity.class));
+        startActivity(new Intent(OnBoarding.this, StartUpScreen.class));
         // Don't come back to this activity
         finish();
     }

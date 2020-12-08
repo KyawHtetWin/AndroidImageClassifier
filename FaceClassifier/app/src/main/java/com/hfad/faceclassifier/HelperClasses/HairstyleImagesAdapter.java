@@ -7,10 +7,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hfad.faceclassifier.Database.Hairstyle;
+import com.hfad.faceclassifier.ModelClasses.Hairstyle;
 import com.hfad.faceclassifier.R;
 import com.squareup.picasso.Picasso;
 

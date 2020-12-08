@@ -20,7 +20,7 @@
             android:id="@+id/login_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/general_back_icon"
+            app:srcCompat="@drawable/general_back_icon"
             android:padding="5dp"/>
 
         <TextView
@@ -39,18 +39,19 @@
             android:layout_marginTop="80dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/login_username"
+                android:id="@+id/login_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="@string/enter_username"
+                android:hint="@string/enter_email"
                 app:hintTextColor="@color/smokyBlack"
                 app:boxStrokeColor="@color/smokyBlack"
                 app:boxStrokeWidthFocused="2dp"
-                app:startIconDrawable="@drawable/field_username_icon"
+                app:startIconDrawable="@drawable/field_email_icon"
                 app:startIconTint="@color/smokyBlack"
                 app:endIconMode="clear_text"
-                app:endIconTint="@color/smokyBlack">
+                app:endIconTint="@color/smokyBlack"
+                android:layout_marginBottom="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -75,7 +76,8 @@
                 app:startIconTint="@color/smokyBlack"
                 app:endIconMode="password_toggle"
                 app:endIconTint="@color/smokyBlack"
-                android:layout_below="@id/login_username">
+                android:layout_below="@id/login_email"
+                android:layout_marginBottom="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -105,6 +107,7 @@
 
 
                 <Button
+                    android:id="@+id/login_forget_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/forget_password"
@@ -126,15 +129,6 @@
                 android:onClick="userLogIn"
                 />
 
-            <Button
-                android:id="@+id/login_create_account"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/create_account"
-                android:layout_below="@id/user_login"
-                android:layout_marginTop="20dp"
-                android:background="#00000000"
-                android:layout_centerHorizontal="true" />
 
             <RelativeLayout
                 android:id="@+id/login_progress_bar"
@@ -146,6 +140,7 @@
                 android:elevation="8dp">
 
                 <ProgressBar
+                    android:id="@+id/progress_bar_login"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_centerInParent="true"/>

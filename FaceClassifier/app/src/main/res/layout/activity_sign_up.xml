@@ -19,7 +19,7 @@
             android:id="@+id/signup_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/general_back_icon"
+            app:srcCompat="@drawable/general_back_icon"
             android:padding="5dp"
             android:transitionName="transition_back_arrow_btn"/>
 
@@ -54,29 +54,8 @@
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/smokyBlack"
                 app:boxStrokeWidthFocused="2dp"
-                app:boxStrokeColor="@color/smokyBlack">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/signup_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/enter_username"
-                app:startIconDrawable="@drawable/field_username_icon"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                app:startIconTint="@color/smokyBlack"
-                app:hintTextColor="@color/smokyBlack"
-                android:textColorHint="@color/smokyBlack"
-                app:endIconMode="clear_text"
-                app:endIconTint="@color/smokyBlack"
-                app:boxStrokeWidthFocused="2dp"
-                app:boxStrokeColor="@color/smokyBlack">
+                app:boxStrokeColor="@color/smokyBlack"
+                android:layout_marginBottom="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -98,7 +77,8 @@
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/smokyBlack"
                 app:boxStrokeWidthFocused="2dp"
-                app:boxStrokeColor="@color/smokyBlack">
+                app:boxStrokeColor="@color/smokyBlack"
+                android:layout_marginBottom="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -120,7 +100,8 @@
                 app:endIconMode="password_toggle"
                 app:endIconTint="@color/smokyBlack"
                 app:boxStrokeWidthFocused="2dp"
-                app:boxStrokeColor="@color/smokyBlack">
+                app:boxStrokeColor="@color/smokyBlack"
+                android:layout_marginBottom="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -142,18 +123,6 @@
             android:elevation="5dp"
             android:layout_marginTop="20dp"
             android:transitionName="transition_next_btn"/>
-
-        <Button
-            android:id="@+id/signup_login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/login"
-            android:background="#00000000"
-            android:textColor="@color/smokyBlack"
-            android:fontFamily="@font/muli"
-            android:elevation="5dp"
-            android:layout_marginTop="20dp"
-            android:transitionName="transition_login_btn"/>
 
     </LinearLayout>
 

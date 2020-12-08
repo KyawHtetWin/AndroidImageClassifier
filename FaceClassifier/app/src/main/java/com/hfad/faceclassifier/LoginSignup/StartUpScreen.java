@@ -8,15 +8,30 @@ import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.hfad.faceclassifier.HomeActivity;
 import com.hfad.faceclassifier.R;
 
 public class StartUpScreen extends AppCompatActivity {
 
+    FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_up_screen);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        /***
+        // Check if the user has already registered or logged in
+        if (firebaseAuth.getCurrentUser() != null) {
+            // Just go to HomeActivity in that case
+            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+            // Don't come back here
+            finish();
+        }
+        ***/
     }
 
     public void LoginButtonClicked(View view) {

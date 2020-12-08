@@ -103,7 +103,7 @@ def predict_age_gender(frame, padding=20):
         agePreds = ageNet.forward()
         age = ageList[agePreds[0].argmax()]
 
-        prediction = f"\nGender: {gender}\nEstimated Age: {age}"
+        prediction = f"{gender}, {age}"
 
     return resultImg, prediction
 
@@ -113,7 +113,6 @@ def handle_request():
 
     files_ids = list(flask.request.files)
     image_num = 1
-    predicted_face_shape = "NO FACE"
     confidence = 1_000_000_000_0000
 
     for file_id in files_ids:
@@ -130,17 +129,16 @@ def handle_request():
         result_img, predicted_age_gender = predict_age_gender(input_img)
 
         if predicted_age_gender == None:
-            predicted_age_gender = "\nNo face detected"
-            predictions = predicted_age_gender
+            predictions = "NO FACE"
         else:
-            #predictions = str(predicted_face_shape + "\nConfidence Level: " + str(confidence) + "%" )
-            predictions = str(predicted_face_shape)
-            predictions += predicted_age_gender
+            predictions = predicted_face_shape
+            predictions += "," + predicted_age_gender
 
 
         if image_num > 1:
             break
 
+    print("\nReturning: " + predictions)
     return predictions
 
 app.run(host="0.0.0.0", port=5000, debug=True)
