@@ -56,7 +56,7 @@ public class OnBoarding extends AppCompatActivity {
 
     // This method gets called when the user press the skip button
     public void skip(View view) {
-        startActivity(new Intent(OnBoarding.this, HomeActivity.class));
+        startActivity(new Intent(OnBoarding.this, StartUpScreen.class));
         // Don't come back to this activity
         finish();
     }

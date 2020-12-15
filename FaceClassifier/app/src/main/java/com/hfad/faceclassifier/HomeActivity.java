@@ -29,8 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.hfad.faceclassifier.LoginSignup.Login;
-import com.hfad.faceclassifier.LoginSignup.StartUpScreen;
+import com.hfad.faceclassifier.LoginSignup.LogOutFragment;
 import com.hfad.faceclassifier.ModelClasses.UserHelper;
 
 import java.util.List;
@@ -118,38 +117,43 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
 
         }
 
-        Log.i("User ID ", userId);
         // Gets user information from Cloud Firestore
         getUserInfo();
     }
 
 
     /**************
-     This function retrieves the user information from Cloud Firestore
+     This function retrieves information about the user from Cloud Firestore
      **************/
     private void getUserInfo() {
 
         DocumentReference documentReference = fStore.collection("users").document(userId);
-        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot,
-                                @javax.annotation.Nullable FirebaseFirestoreException e) {
-                Log.e("MyTag", "Firebase exception", e);
-                if(documentSnapshot.exists()){
-                    navUserName.setText(documentSnapshot.getString("fullname"));
-                    navEmail.setText(documentSnapshot.getString("email"));
-                    // Retrieves gender information
-                    currentUser.setGender(documentSnapshot.getString("gender"));
-                    // Means user have his face shape detected before
-                    if(!documentSnapshot.getString("faceshape").equals("none"))
-                        currentUser.setGender(documentSnapshot.getString("faceshape"));
-                }
+        if (documentReference != null) {
+            documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot,
+                                    @javax.annotation.Nullable FirebaseFirestoreException e) {
+                    Log.d("********** HOMEACTIVITY" , "Firebase exception", e);
+                    if(documentSnapshot.exists()){
+                        navUserName.setText(documentSnapshot.getString("fullname"));
+                        currentUser.setFullName(documentSnapshot.getString("fullname"));
+                        navEmail.setText(documentSnapshot.getString("email"));
+                        currentUser.setEmail(documentSnapshot.getString("email"));
+                        // Retrieves gender information
+                        currentUser.setGender(documentSnapshot.getString("gender"));
+                        // Means user have his face shape detected before
+                        if(!documentSnapshot.getString("faceshape").equals("none"))
+                            currentUser.setFaceShape(documentSnapshot.getString("faceshape"));
+                    }
 
-                else {
-                    Log.d("tag", "onEvent: Document do not exists");
+                    else {
+                        Log.d("tag", "onEvent: Document do not exists");
+                    }
                 }
-            }
-        });
+            });
+
+        }
+
     }
 
     /**************
@@ -253,7 +257,7 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                 break;
 
             case R.id.nav_recommendation:
-
+                Toast.makeText(this, "Current User name: " + currentUser.getFullName(), Toast.LENGTH_SHORT).show();
                 if(currentUser.getFaceShape() == null) {
                     Toast.makeText(this, "Detect your face shape before getting recommendation", Toast.LENGTH_SHORT).show();
                 }
@@ -276,12 +280,7 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                 break;
 
             case R.id.nav_logout:
-                Toast.makeText(this, "NEED IMPLEMENTATION", Toast.LENGTH_SHORT).show();
-                // logOutPressed();
-                //fAuth.signOut(); // Logout the user
-                // Takes user back to start up screen
-                //startActivity(new Intent(getApplicationContext(), StartUpScreen.class));
-                //finish();
+                logOutPressed();
                 break;
 
             case R.id.nav_about_us:
@@ -301,11 +300,10 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        fAuth.signOut();
-                        Toast.makeText(getApplicationContext(), "Signed Out", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(HomeActivity.this, Login.class);
-                        startActivity(intent);
-                        finish();
+                        LogOutFragment logOutFragment = new LogOutFragment();
+                        logOutFragment.setFirebaseAuth(fAuth);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                logOutFragment).addToBackStack(null).commit();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

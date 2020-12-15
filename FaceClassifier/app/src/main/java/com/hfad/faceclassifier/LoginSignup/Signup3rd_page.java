@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -28,6 +29,8 @@ import java.util.Map;
 public class Signup3rd_page extends AppCompatActivity {
 
     public static final String TAG = "Signup3rd Page";
+
+    ImageView backBtn;
     TextInputLayout phoneNumber;
 
     String fullNameStr, emailStr, passwordStr, selectedGenderStr, birthday,
@@ -49,9 +52,9 @@ public class Signup3rd_page extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup3rd_page);
 
+        backBtn = findViewById(R.id.signup3_back_button);
         phoneNumber = findViewById(R.id.signup_phonenumber);
         progressBar = findViewById(R.id.progress_bar_signup3rdpage);
-
         fullNameStr = getIntent().getExtras().getString("Full Name");
         emailStr = getIntent().getExtras().getString("Email");
         passwordStr = getIntent().getExtras().getString("Password");
@@ -60,6 +63,13 @@ public class Signup3rd_page extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), StartUpScreen.class));
+            }
+        });
 
 
 
@@ -114,6 +124,8 @@ public class Signup3rd_page extends AppCompatActivity {
                             user.put("gender", selectedGenderStr);
                             user.put("birthday", birthday);
                             user.put("phonenumber", phoneNumberStr);
+                            // Initially set the user face shape to none
+                            user.put("faceshape", "none");
 
                             // Insert into Firestore database
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {

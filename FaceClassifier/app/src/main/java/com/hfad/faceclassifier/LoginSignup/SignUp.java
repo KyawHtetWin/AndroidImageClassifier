@@ -24,6 +24,7 @@ public class SignUp extends AppCompatActivity {
 
     String fullNameStr, emailStr, passwordStr;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +37,13 @@ public class SignUp extends AppCompatActivity {
         fullName = findViewById(R.id.signup_fullname);
         email = findViewById(R.id.signup_email);
         password = findViewById(R.id.signup_password);
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), StartUpScreen.class));
+            }
+        });
     }
 
 

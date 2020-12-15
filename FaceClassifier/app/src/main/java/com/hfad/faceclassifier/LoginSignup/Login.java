@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -41,6 +42,8 @@ public class Login extends AppCompatActivity {
 
     FirebaseAuth fAuth;
 
+    ImageView loginBackButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class Login extends AppCompatActivity {
         password  = findViewById(R.id.login_password);
         progressBar = findViewById(R.id.login_progress_bar);
         forgetPassword = findViewById(R.id.login_forget_password);
+        loginBackButton = findViewById(R.id.login_back_button);
         progressBar.setVisibility(View.GONE);
 
         fAuth = FirebaseAuth.getInstance();
@@ -61,6 +65,15 @@ public class Login extends AppCompatActivity {
                 onForgotPassword(v);
             }
         });
+
+
+        loginBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), StartUpScreen.class));
+            }
+        });
+
     }
 
 

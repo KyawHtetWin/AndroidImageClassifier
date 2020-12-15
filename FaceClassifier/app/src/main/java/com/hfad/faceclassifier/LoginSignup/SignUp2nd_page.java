@@ -36,7 +36,7 @@ public class SignUp2nd_page extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up2nd_page);
 
-        backBtn = findViewById(R.id.signup_back_button);
+        backBtn = findViewById(R.id.signup2_back_button);
         next = findViewById(R.id.signup_next_button);
 
         titleText = findViewById(R.id.sigup_title_text);
@@ -46,6 +46,13 @@ public class SignUp2nd_page extends AppCompatActivity {
         fullNameStr = getIntent().getExtras().getString("Full Name");
         emailStr = getIntent().getExtras().getString("Email");
         passwordStr = getIntent().getExtras().getString("Password");
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), StartUpScreen.class));
+            }
+        });
     }
 
     private boolean validateGender(){

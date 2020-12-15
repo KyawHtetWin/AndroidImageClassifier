@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.hfad.faceclassifier.HomeActivity;
@@ -23,16 +24,17 @@ public class StartUpScreen extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        /***
         // Check if the user has already registered or logged in
         if (firebaseAuth.getCurrentUser() != null) {
             // Just go to HomeActivity in that case
+            Toast.makeText(getApplicationContext(), firebaseAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-            // Don't come back here
+            //Don't come back here
             finish();
         }
-        ***/
     }
+
+
 
     public void LoginButtonClicked(View view) {
 

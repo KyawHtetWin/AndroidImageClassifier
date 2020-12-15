@@ -96,7 +96,7 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                mHairStyles.clear(); // Clear to prevent loading twice
+                //mHairStyles.clear(); // Clear to prevent loading twice
 
                 // Retrieves hairstyles' data from Firebase Storage
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
@@ -164,7 +164,13 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
 
             @Override
             public void afterTextChanged(Editable s) {
-                filter(s.toString());
+                // User searching, so filter RecyclerView based on search term
+                if(!s.toString().isEmpty())
+                    filter(s.toString());
+                // User clears the search, so loads the original dataset into RecyclerVeiw
+                else
+                   mAdapter.filtered(mHairStyles);
+
             }
         });
     

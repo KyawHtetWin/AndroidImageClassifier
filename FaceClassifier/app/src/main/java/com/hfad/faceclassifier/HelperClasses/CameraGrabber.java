@@ -22,9 +22,6 @@ import ai.deepar.ar.DeepAR;
  * This is an example implementation of how the camera frames are fed to the DeepAR SDK. Feel free
  * to use it as is, or modify for your own needs.
  */
-
-
-
 public class CameraGrabber
 {
     private static final String TAG = CameraGrabber.class.getSimpleName();
