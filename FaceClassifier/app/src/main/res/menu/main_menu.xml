@@ -25,26 +25,31 @@
             android:icon = "@drawable/face_info"/>
 
         <item
-            android:id="@+id/nav_face_shape_info"
+            android:id="@+id/nav_view_favorites"
+            android:icon="@drawable/favorite_icon"
+            android:title="@string/favorites" />
+        <item
+            android:id="@+id/nav_face_shape"
             android:title="@string/face_shape"
             android:icon = "@drawable/face_shape_info_icon"/>
     </group>
 
-    <item android:title="User Profile">
+    <item
+        android:id="@+id/nav_profile"
+        android:title="Profile">
 
         <menu>
-            <group
-                android:checkableBehavior="single">
+            <group android:checkableBehavior="single">
 
                 <item
                     android:id="@+id/nav_profile"
-                    android:title="@string/profile"
-                    android:icon = "@drawable/menu_profile_icon"/>
+                    android:icon="@drawable/menu_profile_icon"
+                    android:title="@string/profile" />
 
                 <item
                     android:id="@+id/nav_logout"
-                    android:title="@string/logout"
-                    android:icon = "@drawable/menu_back_arrow"/>
+                    android:icon="@drawable/menu_back_arrow"
+                    android:title="@string/logout" />
 
             </group>
 

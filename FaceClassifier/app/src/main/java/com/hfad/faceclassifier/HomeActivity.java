@@ -30,8 +30,10 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.hfad.faceclassifier.LoginSignup.LogOutFragment;
+import com.hfad.faceclassifier.ModelClasses.BrowseFavoritesFragment;
 import com.hfad.faceclassifier.ModelClasses.UserHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -43,6 +45,10 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
     private static final int MULTIPLE_PERMISSIONS = 7777;
 
     private static final float END_SCALE = 0.7f;
+    private static ArrayList<String> faveHairstyles;
+
+//    public ArrayList<String> faveHairstyles;
+
     /************** UI Components **************/
     // Drawer Menu
     DrawerLayout drawerLayout;
@@ -63,6 +69,9 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
     // Browse HairStyle page
     BrowseHairStylesFragment browseHairStylesFragment;
 
+    // User Profile page
+    UserProfile userProfileFragment;
+
     // Recommendation page
     RecommendedFragment recommendedFragment;
 
@@ -73,11 +82,11 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
 
     // Required Permissions to ask users
     String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.CAMERA,
-                            Manifest.permission.RECORD_AUDIO};
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO};
 
     // Represents the current User
-    UserHelper currentUser;
+    public UserHelper currentUser;
 
     // User id of the current user
     String userId;
@@ -87,6 +96,8 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        faveHairstyles = new ArrayList<String>();
 
         // Initialize UI Components
         drawerLayout   = findViewById(R.id.drawer_layout);
@@ -113,7 +124,7 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new HomeFragment()).commit();
+                    new HomeFragment()).commit();
 
         }
 
@@ -121,6 +132,10 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
         getUserInfo();
     }
 
+
+    public static ArrayList<String> getFaveList() {
+        return faveHairstyles;
+    }
 
     /**************
      This function retrieves information about the user from Cloud Firestore
@@ -188,6 +203,11 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
     }
 
 
+//    public static UserHelper getCurrentUserHelper() {
+//        UserHelper user = new UserHelper();
+//        user = currentUser;
+//    }
+
     /**************
      This function deals with animations of changing color when the user draws the navigation
      drawer.
@@ -247,7 +267,7 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
 
             case R.id.nav_home:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new HomeFragment()).addToBackStack(null).commit();
+                        new HomeFragment()).addToBackStack(null).commit();
                 break;
 
             case R.id.nav_search:
@@ -257,16 +277,16 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                 break;
 
             case R.id.nav_recommendation:
-                Toast.makeText(this, "Current User name: " + currentUser.getFullName(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Current User name: " + currentUser.getFullName(), Toast.LENGTH_SHORT).show();
                 if(currentUser.getFaceShape() == null) {
-                    Toast.makeText(this, "Detect your face shape before getting recommendation", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "You must detect your face shape before getting a recommendation", Toast.LENGTH_SHORT).show();
                 }
 
                 else {
                     recommendedFragment = new RecommendedFragment();
                     recommendedFragment.setCurrentUser(currentUser);
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                           recommendedFragment).addToBackStack(null).commit();
+                            recommendedFragment).addToBackStack(null).commit();
                 }
                 break;
 
@@ -275,12 +295,26 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                         new ARFragment()).addToBackStack(null).commit();
                 break;
 
-            case R.id.nav_face_shape_info:
-                Toast.makeText(this, "Implement Face Shape Info Page", Toast.LENGTH_SHORT).show();
+            case R.id.nav_view_favorites:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new BrowseFavoritesFragment()).addToBackStack(null).commit();
+                break;
+
+            case R.id.nav_face_shape:
+                //Toast.makeText(this, "Implement Face Shape Info Page", Toast.LENGTH_SHORT).show();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new FaceShapeInfoFragment()).addToBackStack(null).commit();
                 break;
 
             case R.id.nav_logout:
                 logOutPressed();
+                break;
+
+            case R.id.nav_profile:
+                //Toast.makeText(this, "Profile pressed", Toast.LENGTH_SHORT).show();
+                userProfileFragment = new UserProfile();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        userProfileFragment).addToBackStack(null).commit();
                 break;
 
             case R.id.nav_about_us:
@@ -315,12 +349,13 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
         alert.show();
     }
 
+
     // Show the information on the version of our application
     public void aboutPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this,
                 android.R.style.Theme_Material_Light_Dialog_NoActionBar_MinWidth);
         builder.setTitle("About");
-        builder.setMessage("Hair For Your Face\nVersion 1.0\nDate: Dec 12th, 2020");
+        builder.setMessage("Haircut For Your Face\nVersion 1.0\nDate: Dec 12th, 2020");
         AlertDialog alert = builder.create();
         alert.setCanceledOnTouchOutside(true);
         alert.show();
@@ -339,7 +374,7 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
             case AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE:
 
                 if(EasyPermissions.hasPermissions(this, permissions)){
-                    Toast.makeText(this, "All permission granted", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "All permissions granted", Toast.LENGTH_LONG).show();
                 }
 
                 break;

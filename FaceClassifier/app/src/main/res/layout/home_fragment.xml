@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,34 +21,36 @@
         <!--android:onClick="selectImage"-->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="132dp"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/open__camera"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="350dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:text="Camera"
                 android:backgroundTint="@color/colorPrimaryDark"
-                android:textColor="@color/smokyBlack"
-                android:textStyle="bold"
                 android:drawableBottom="@drawable/camera"
-                android:drawableTint="@color/smokyBlack"/>
+                android:drawableTint="@color/smokyBlack"
+                android:text="Camera"
+                android:textAlignment="center"
+                android:textColor="@color/smokyBlack"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/select_img"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="350dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:text="Select Image(s)"
-                android:textStyle="bold"
-                android:textColor="@color/smokyBlack"
-                android:drawableBottom="@drawable/select_image"
                 android:backgroundTint="@color/colorPrimaryDark"
-                android:drawableTint="@color/smokyBlack"/>
+                android:drawableBottom="@drawable/select_image"
+                android:drawableTint="@color/smokyBlack"
+                android:text="Select Image(s)"
+                android:textAlignment="center"
+                android:textColor="@color/smokyBlack"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <TextView
@@ -60,17 +63,19 @@
             android:textColor="#988734"
             android:gravity="center_horizontal" />
 
+        <!--android:onClick="connectServer""-->
+
         <ImageView
 
             android:id="@+id/selected_iv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:src="@drawable/will_smith"
             android:adjustViewBounds="true"
-            />
+            android:scaleType="center"
+            android:src="@drawable/will_smith"
+            app:srcCompat="@drawable/upload_palceholder_image" />
 
-        <!--android:onClick="connectServer""-->
         <Button
             android:id="@+id/connect_server"
             android:layout_width="match_parent"

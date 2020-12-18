@@ -59,6 +59,8 @@
     <string name="square">Square</string>
     <string name="get_recommendation">Recommended Hairstyles</string>
     <string name="ar">Augmented Reality</string>
+    <string name="user_name_for_profile">User Name</string>
+    <string name="favorites">Favorites</string>
 
 
 </resources>

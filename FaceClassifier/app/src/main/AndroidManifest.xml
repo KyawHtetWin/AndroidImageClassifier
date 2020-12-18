@@ -24,8 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <!--
-        <activity android:name=".ARActivity"></activity> -->
+        <!--         <activity android:name=".ARActivity"></activity> -->
         <activity android:name=".LoginSignup.Signup3rd_page" />
         <activity android:name=".LoginSignup.SignUp2nd_page" />
         <activity android:name=".LoginSignup.SignUp" />
