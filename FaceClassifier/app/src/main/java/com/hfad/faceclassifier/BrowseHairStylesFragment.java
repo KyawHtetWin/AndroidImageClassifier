@@ -42,10 +42,11 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
     private ImageButton filterBtn;
     private RecyclerView browseHairStyle_RV;
     private EditText searchBar;
-    
+
     private ImageButton searchVoiceBtn;
 
     private ArrayList<Hairstyle> mHairStyles;
+    public ArrayList<String> faveHairstyles;
 
     HairstyleImagesAdapter mAdapter;
 
@@ -60,7 +61,6 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         // Inflate with RecyclerView layout
         View view = inflater.inflate(
                 R.layout.fragment_browse_hairstyles, container, false);
@@ -71,12 +71,12 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
             mProgressCircle.setProgressTintList(ColorStateList.valueOf(Color.CYAN));
         }
 
-
         browseHairStyle_RV = view.findViewById(R.id.hairstyle_collection_rv);
         mHairStyles = new ArrayList<>();
+        faveHairstyles = HomeActivity.getFaveList();
 
         // Pass the data to adapter
-        mAdapter = new HairstyleImagesAdapter(mHairStyles);
+        mAdapter = new HairstyleImagesAdapter(mHairStyles, faveHairstyles);
 
         // Assign the adapter to the RV
         browseHairStyle_RV.setAdapter(mAdapter);
@@ -147,8 +147,8 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
                 voiceSearch();
             }
         });
-        
-        
+
+
         // Search Bar Search
         searchBar = view.findViewById(R.id.search_input);
         searchBar.addTextChangedListener(new TextWatcher() {
@@ -173,7 +173,7 @@ public class BrowseHairStylesFragment extends Fragment implements FilterDialog.F
 
             }
         });
-    
+
 
         return view;
     }

@@ -3,8 +3,10 @@ package com.hfad.faceclassifier.HelperClasses;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,12 +15,14 @@ import com.hfad.faceclassifier.ModelClasses.Hairstyle;
 import com.hfad.faceclassifier.R;
 import com.squareup.picasso.Picasso;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class HairstyleImagesAdapter extends RecyclerView.Adapter<HairstyleImagesAdapter.ViewHolder> {
 
     // Each view has face shape of hairstyle and image
-    private ArrayList<Hairstyle> hairstyles;
+    public ArrayList<Hairstyle> hairstyles;
+    public ArrayList<String> favorites;
 
     private Listener listener;
     public interface Listener {
@@ -31,18 +35,43 @@ public class HairstyleImagesAdapter extends RecyclerView.Adapter<HairstyleImages
     }
 
     // Constructor
-    public HairstyleImagesAdapter(ArrayList<Hairstyle> hairstyles) {
+    public HairstyleImagesAdapter(ArrayList<Hairstyle> hairstyles, ArrayList<String> favorites) {
         this.hairstyles = hairstyles;
+        this.favorites = favorites;
     }
 
     // Defines ViewHolder as inner class (Specify which view should be used for each data item)
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private CardView cardView;
 
         public ViewHolder(CardView v) {
             super(v);
             cardView = v;
+
+            ImageButton faveBtn;
+            faveBtn = (ImageButton) cardView.findViewById(R.id.favoriteButton);
+            faveBtn.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Hairstyle hairClicked = HairstyleImagesAdapter.this.hairstyles.get(getAdapterPosition());
+            String imgUrl = hairClicked.getImageURL();
+            ImageButton faveBtn;
+            faveBtn = (ImageButton) cardView.findViewById(R.id.favoriteButton);
+
+            if (favorites.contains(imgUrl)) {
+                favorites.remove(imgUrl);
+                faveBtn.setImageResource(R.drawable.favorite_icon);
+                Toast.makeText(v.getContext(), "Removed from Favorites!", Toast.LENGTH_SHORT).show();
+            }
+
+            else {
+                favorites.add(hairClicked.getImageURL());
+                faveBtn.setImageResource(R.drawable.favorite_icon_pressed);
+                Toast.makeText(v.getContext(), "Added to Favorites!", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -95,8 +124,10 @@ public class HairstyleImagesAdapter extends RecyclerView.Adapter<HairstyleImages
         });
     }
 
+
     public void filtered(ArrayList<Hairstyle> filteredHairStyles){
         hairstyles = filteredHairStyles;
         notifyDataSetChanged();
     }
+
 }

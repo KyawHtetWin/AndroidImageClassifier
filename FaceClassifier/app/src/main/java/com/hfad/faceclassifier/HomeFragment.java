@@ -317,7 +317,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
 
             else {
-                Toast.makeText(getActivity(), "You haven't Picked any Image.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "You haven't Picked any Images.", Toast.LENGTH_LONG).show();
             }
 
             Toast.makeText(getActivity(), selectedImagesPaths.size() + " Image(s) Selected.", Toast.LENGTH_LONG).show();
