@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/snowWhite"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="USER PROFILE:"
+            android:fontFamily="@font/brandon_grotesque_black"
+            android:textSize="25sp" />
+
+
+        <TextView
+            android:id="@+id/upo_fullNameTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Full Name: Kyaw Htet Paing Win"
+            android:fontFamily="@font/brandon_grotesque_black"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/upo_faceShapeTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Face Shape: Oblong"
+            android:fontFamily="@font/brandon_grotesque_black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/upo_emailTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Email: kyawhtetpaingwin111@gmail.com"
+            android:fontFamily="@font/brandon_grotesque_black"
+            android:textSize="18sp"
+            android:layout_marginBottom="20dp"/>
+
+    </LinearLayout>

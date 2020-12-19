@@ -154,7 +154,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        String postUrl = "http://" + ipv4Address + ":" + portNumber + "/";
+       // String postUrl = "http://" + ipv4Address + ":" + portNumber + "/";
+        // The URL of Google Cloud API
+        String postUrl = "https://fc-api-dk6e4v3dwa-uw.a.run.app/";
 
         // Used to create RequestBody that supports sending multi-part data in the HTTP
         // MultipartBody.FORM - makes it a regular form in HTML pages (i.e form with several fields each with
@@ -215,12 +217,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 call.cancel();
                 Log.d("FAIL", e.getMessage());
 
+                final String errorMessage = e.getMessage();
+
                 // In order to access the TextView inside the UI thread, the code is executed inside runOnUiThread()
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         TextView responseText = getView().findViewById(R.id.responseText);
-                        responseText.setText("Failed to Connect to Server. Please Try Again.");
+                        // responseText.setText("Failed to Connect to Server. Please Try Again.");
+                        responseText.setText("EXCEPTION: " + errorMessage);
                     }
                 });
             }

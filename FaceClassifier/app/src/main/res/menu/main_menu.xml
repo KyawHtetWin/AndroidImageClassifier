@@ -28,15 +28,14 @@
             android:id="@+id/nav_view_favorites"
             android:icon="@drawable/favorite_icon"
             android:title="@string/favorites" />
+
         <item
             android:id="@+id/nav_face_shape"
-            android:title="@string/face_shape"
-            android:icon = "@drawable/face_shape_info_icon"/>
+            android:icon="@drawable/face_shape_info_icon"
+            android:title="@string/face_shape" />
     </group>
 
-    <item
-        android:id="@+id/nav_profile"
-        android:title="Profile">
+    <item android:title="Profile">
 
         <menu>
             <group android:checkableBehavior="single">

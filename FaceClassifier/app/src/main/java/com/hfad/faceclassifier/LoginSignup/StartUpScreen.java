@@ -27,11 +27,12 @@ public class StartUpScreen extends AppCompatActivity {
         // Check if the user has already registered or logged in
         if (firebaseAuth.getCurrentUser() != null) {
             // Just go to HomeActivity in that case
-            Toast.makeText(getApplicationContext(), firebaseAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), firebaseAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
             //Don't come back here
             finish();
         }
+
     }
 
 

@@ -30,7 +30,7 @@ public class LogOutFragment extends Fragment {
     public void onStart() {
         super.onStart();
         firebaseAuth.signOut();
-        Toast.makeText(getContext(), "Logging out", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), "Logging out", Toast.LENGTH_LONG).show();
         Intent intent = new Intent();
         intent.setClass(getActivity(), Login.class);
         getActivity().startActivity(intent);

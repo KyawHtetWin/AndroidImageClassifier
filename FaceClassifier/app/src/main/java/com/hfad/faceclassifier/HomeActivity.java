@@ -69,8 +69,6 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
     // Browse HairStyle page
     BrowseHairStylesFragment browseHairStylesFragment;
 
-    // User Profile page
-    UserProfile userProfileFragment;
 
     // Recommendation page
     RecommendedFragment recommendedFragment;
@@ -141,28 +139,45 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
      This function retrieves information about the user from Cloud Firestore
      **************/
     private void getUserInfo() {
-
+        Log.d("HOME ACTIVITY: USER ID ", userId);
         DocumentReference documentReference = fStore.collection("users").document(userId);
+
+        if(documentReference == null){
+            Log.d("HOME ACTIVITY: ", "Document Reference is null");
+        }
+
         if (documentReference != null) {
             documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot,
                                     @javax.annotation.Nullable FirebaseFirestoreException e) {
-                    Log.d("********** HOMEACTIVITY" , "Firebase exception", e);
-                    if(documentSnapshot.exists()){
-                        navUserName.setText(documentSnapshot.getString("fullname"));
-                        currentUser.setFullName(documentSnapshot.getString("fullname"));
-                        navEmail.setText(documentSnapshot.getString("email"));
-                        currentUser.setEmail(documentSnapshot.getString("email"));
-                        // Retrieves gender information
-                        currentUser.setGender(documentSnapshot.getString("gender"));
-                        // Means user have his face shape detected before
-                        if(!documentSnapshot.getString("faceshape").equals("none"))
-                            currentUser.setFaceShape(documentSnapshot.getString("faceshape"));
-                    }
 
-                    else {
-                        Log.d("tag", "onEvent: Document do not exists");
+
+                    if(documentSnapshot != null) {
+
+                        if(documentSnapshot.exists()) {
+                            navUserName.setText(documentSnapshot.getString("fullname"));
+                            currentUser.setFullName(documentSnapshot.getString("fullname"));
+                            navEmail.setText(documentSnapshot.getString("email"));
+                            currentUser.setEmail(documentSnapshot.getString("email"));
+                            // Retrieves gender information
+                            currentUser.setGender(documentSnapshot.getString("gender"));
+
+                            if (documentSnapshot.getString("faceshape") == null) {
+                                Log.d("*", "******************************** Face Shape is null");
+                            } else {
+                                // Means user have his face shape detected before
+                                String faceShape = documentSnapshot.getString("faceshape");
+                                if (!faceShape.equals("none")) {
+                                    currentUser.setFaceShape(faceShape);
+                                }
+                                Log.d("*", "********************************" + documentSnapshot.getString("faceshape"));
+                            }
+                        }
+
+                        else {
+                            Log.d("tag", "onEvent: Document do not exists");
+                        }
                     }
                 }
             });
@@ -202,11 +217,6 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
 
     }
 
-
-//    public static UserHelper getCurrentUserHelper() {
-//        UserHelper user = new UserHelper();
-//        user = currentUser;
-//    }
 
     /**************
      This function deals with animations of changing color when the user draws the navigation
@@ -277,7 +287,6 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                 break;
 
             case R.id.nav_recommendation:
-                //Toast.makeText(this, "Current User name: " + currentUser.getFullName(), Toast.LENGTH_SHORT).show();
                 if(currentUser.getFaceShape() == null) {
                     Toast.makeText(this, "You must detect your face shape before getting a recommendation", Toast.LENGTH_SHORT).show();
                 }
@@ -301,7 +310,6 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                 break;
 
             case R.id.nav_face_shape:
-                //Toast.makeText(this, "Implement Face Shape Info Page", Toast.LENGTH_SHORT).show();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new FaceShapeInfoFragment()).addToBackStack(null).commit();
                 break;
@@ -311,10 +319,7 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
                 break;
 
             case R.id.nav_profile:
-                //Toast.makeText(this, "Profile pressed", Toast.LENGTH_SHORT).show();
-                userProfileFragment = new UserProfile();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        userProfileFragment).addToBackStack(null).commit();
+                userprofilePressed();
                 break;
 
             case R.id.nav_about_us:
@@ -349,6 +354,42 @@ public class HomeActivity extends AppCompatActivity implements  NavigationView.O
         alert.show();
     }
 
+    // Shows the user profile when pressed
+    public void userprofilePressed(){
+
+        View userProfileLayout = getLayoutInflater().inflate(R.layout.user_profile, null);
+
+        TextView upo_fullname = userProfileLayout.findViewById(R.id.upo_fullNameTxt);
+        TextView upo_faceshape = userProfileLayout.findViewById(R.id.upo_faceShapeTxt);
+        TextView upo_email = userProfileLayout.findViewById(R.id.upo_emailTxt);
+
+        if(currentUser != null) {
+            upo_fullname.setText("Name: " + currentUser.getFullName());
+
+            if(currentUser.getFaceShape() != null) {
+                upo_faceshape.setText("Face Shape: " + currentUser.getFaceShape());
+            }
+            else {
+                upo_faceshape.setText("Face Shape: Not Determined Yet");
+            }
+
+            upo_email.setText("Email: " + currentUser.getEmail());
+        }
+
+        else {
+            upo_fullname.setText("Name: NOT APPLICABLE");
+            upo_faceshape.setText("Face Shape: NOT APPLICABLE");
+            upo_email.setText("Email: NOT APPLICABLE");
+        }
+
+
+        AlertDialog.Builder userProfileBuilder = new AlertDialog.Builder(HomeActivity.this);
+        userProfileBuilder.setView(userProfileLayout);
+        AlertDialog alert = userProfileBuilder.create();
+        alert.setCanceledOnTouchOutside(true);
+        alert.show();
+
+    }
 
     // Show the information on the version of our application
     public void aboutPressed() {

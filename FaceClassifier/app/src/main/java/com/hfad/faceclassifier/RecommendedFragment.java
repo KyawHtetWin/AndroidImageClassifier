@@ -123,14 +123,14 @@ public class RecommendedFragment extends Fragment {
            @Override
            public void onFavoriteClick(int position, ImageView favoriteIconImg) {
                if(!mHairStyles.get(position).getIsFavorite()) {
-                   Toast.makeText(getContext(), "Setting Favorite to true" , Toast.LENGTH_LONG).show();
+                   //Toast.makeText(getContext(), "Setting Favorite to true" , Toast.LENGTH_LONG).show();
                    // Set favorite
                    mHairStyles.get(position).setFavorite(true);
                    mHairStyles.get(position).setFavoriteIconResourceId(R.drawable.favorite_icon_pressed);
                }
 
                else{
-                   Toast.makeText(getContext(), "Setting Favorite to false" , Toast.LENGTH_LONG).show();
+                   //Toast.makeText(getContext(), "Setting Favorite to false" , Toast.LENGTH_LONG).show();
                    // Reset Favorite
                    mHairStyles.get(position).setFavorite(false);
                    mHairStyles.get(position).setFavoriteIconResourceId(R.drawable.favorite_icon);
